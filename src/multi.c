@@ -146,6 +146,7 @@ void execCommandAbort(client *c, sds error) {
 }
 
 void execCommand(client *c) {
+    printf("Hi my name is yubin~!");
     int j;
     robj **orig_argv;
     int orig_argc, orig_argv_len;
