@@ -1669,6 +1669,7 @@ void zsetTypeRandomElement(robj *zsetobj, unsigned long zsetsize, listpackEntry 
 
 /* This generic command implements both ZADD and ZINCRBY. */
 void zaddGenericCommand(client *c, int flags) {
+    printf("444444444444444~!");
     static char *nanerr = "resulting score is not a number (NaN)";
     robj *key = c->argv[1];
     robj *zobj;
@@ -1798,6 +1799,7 @@ cleanup:
 
 void zaddCommand(client *c) {
     zaddGenericCommand(c,ZADD_IN_NONE);
+    printf("333333333333~!");
 }
 
 void zincrbyCommand(client *c) {
