@@ -60,6 +60,12 @@
 #include "intset.h"  /* Compact integer set structure */
 #include <math.h>
 
+#define PER_MICROSEC 1000
+static long long NANOS = 1000000000LL;
+static struct timespec tstart={0,0}, tend={0,0}, tstart2={0,0}, tend2={0,0};
+static long long duration = 0;
+static long long duration2 = 0;
+
 /*-----------------------------------------------------------------------------
  * Skiplist implementation of the low level API
  *----------------------------------------------------------------------------*/
@@ -1765,7 +1771,13 @@ void zaddGenericCommand(client *c, int flags) {
         int retflags = 0;
 
         ele = c->argv[scoreidx+1+j*2]->ptr;
+
+        // add time code 2
+        clock_gettime(CLOCK_MONOTONIC, &tstart2);
         int retval = zsetAdd(zobj, score, ele, flags, &retflags, &newscore);
+        clock_gettime(CLOCK_MONOTONIC, &tend2);
+        duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+        printf("zsetAdd : %lld(us)\n", duration2/PER_MICROSEC);
         if (retval == 0) {
             addReplyError(c,nanerr);
             goto cleanup;
@@ -1797,7 +1809,13 @@ cleanup:
 }
 
 void zaddCommand(client *c) {
+    // add time code 1
+    clock_gettime(CLOCK_MONOTONIC, &tstart);
     zaddGenericCommand(c,ZADD_IN_NONE);
+    clock_gettime(CLOCK_MONOTONIC, &tend);
+
+    duration  = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    printf("zaddGenericCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 void zincrbyCommand(client *c) {

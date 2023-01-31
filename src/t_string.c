@@ -30,6 +30,14 @@
 #include "server.h"
 #include <math.h> /* isnan(), isinf() */
 
+// add time code
+#define PER_MICROSEC 1000
+static long long NANOS = 1000000000LL;
+static struct timespec tstart={0,0}, tend={0,0}, tstart2={0,0}, tend2={0,0}, tstart3={0,0}, tend3={0,0};
+static long long duration = 0;
+static long long duration2= 0;
+static long long duration3= 0;
+
 /* Forward declarations */
 int getGenericCommand(client *c);
 
@@ -109,7 +117,13 @@ void setGenericCommand(client *c, int flags, robj *key, robj *val, robj *expire,
     setkey_flags |= ((flags & OBJ_KEEPTTL) || expire) ? SETKEY_KEEPTTL : 0;
     setkey_flags |= found ? SETKEY_ALREADY_EXIST : SETKEY_DOESNT_EXIST;
 
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart3);
     setKey(c,c->db,key,val,setkey_flags);
+    clock_gettime(CLOCK_MONOTONIC, &tend3);
+    duration3 = NANOS * (tend3.tv_sec-tstart3.tv_sec) + (tend3.tv_nsec-tstart3.tv_nsec);
+    printf("setKey : %lld(us)\n", duration3/PER_MICROSEC);
+
     server.dirty++;
     notifyKeyspaceEvent(NOTIFY_STRING,"set",key,c->db->id);
 
@@ -291,6 +305,9 @@ int parseExtendedStringArgumentsOrReply(client *c, int *flags, int *unit, robj *
 /* SET key value [NX] [XX] [KEEPTTL] [GET] [EX <seconds>] [PX <milliseconds>]
  *     [EXAT <seconds-timestamp>][PXAT <milliseconds-timestamp>] */
 void setCommand(client *c) {
+    // add time code
+
+    clock_gettime(CLOCK_MONOTONIC, &tstart2);
     robj *expire = NULL;
     int unit = UNIT_SECONDS;
     int flags = OBJ_NO_FLAGS;
@@ -301,6 +318,10 @@ void setCommand(client *c) {
 
     c->argv[2] = tryObjectEncoding(c->argv[2]);
     setGenericCommand(c,flags,c->argv[1],c->argv[2],expire,unit,NULL,NULL);
+
+    clock_gettime(CLOCK_MONOTONIC, &tend2);
+    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    printf("setGenericCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void setnxCommand(client *c) {
@@ -333,7 +354,12 @@ int getGenericCommand(client *c) {
 }
 
 void getCommand(client *c) {
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart);
     getGenericCommand(c);
+    clock_gettime(CLOCK_MONOTONIC, &tend);
+    duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    printf("getCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 /*

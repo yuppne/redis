@@ -29,6 +29,12 @@
 
 #include "server.h"
 
+#define PER_MICROSEC 1000
+static long long NANOS = 1000000000LL;
+static struct timespec tstart={0,0}, tend={0,0}, tstart2={0,0}, tend2={0,0};
+static long long duration = 0;
+static long long duration2 = 0;
+
 /* ================================ MULTI/EXEC ============================== */
 
 /* Client state initialization for MULTI/EXEC */
@@ -110,6 +116,8 @@ void flagTransaction(client *c) {
 }
 
 void multiCommand(client *c) {
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart2);
     if (c->flags & CLIENT_MULTI) {
         addReplyError(c,"MULTI calls can not be nested");
         return;
@@ -117,6 +125,9 @@ void multiCommand(client *c) {
     c->flags |= CLIENT_MULTI;
 
     addReply(c,shared.ok);
+    clock_gettime(CLOCK_MONOTONIC, &tend2);
+    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    printf("multiCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void discardCommand(client *c) {
@@ -146,6 +157,9 @@ void execCommandAbort(client *c, sds error) {
 }
 
 void execCommand(client *c) {
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart);
+
     int j;
     robj **orig_argv;
     int orig_argc, orig_argv_len;
@@ -253,6 +267,10 @@ void execCommand(client *c) {
     discardTransaction(c);
 
     server.in_exec = 0;
+
+    clock_gettime(CLOCK_MONOTONIC, &tend);
+    duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    printf("execCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 /* ===================== WATCH (CAS alike for MULTI/EXEC) ===================

@@ -30,6 +30,12 @@
 #include "server.h"
 #include <math.h>
 
+#define PER_MICROSEC 1000
+static long long NANOS = 1000000000LL;
+static struct timespec tstart={0,0}, tend={0,0},tstart2={0,0}, tend2={0,0};
+static long long duration = 0;
+static long long duration2 = 0;
+
 /*-----------------------------------------------------------------------------
  * Hash type API
  *----------------------------------------------------------------------------*/
@@ -594,6 +600,8 @@ void hsetnxCommand(client *c) {
 }
 
 void hsetCommand(client *c) {
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart2);
     int i, created = 0;
     robj *o;
 
@@ -620,6 +628,10 @@ void hsetCommand(client *c) {
     signalModifiedKey(c,c->db,c->argv[1]);
     notifyKeyspaceEvent(NOTIFY_HASH,"hset",c->argv[1],c->db->id);
     server.dirty += (c->argc - 2)/2;
+
+    clock_gettime(CLOCK_MONOTONIC, &tend2);
+    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    printf("hsetCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void hincrbyCommand(client *c) {
@@ -869,11 +881,16 @@ void hgetallCommand(client *c) {
 }
 
 void hexistsCommand(client *c) {
+    // add time code
+    clock_gettime(CLOCK_MONOTONIC, &tstart);
     robj *o;
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
         checkType(c,o,OBJ_HASH)) return;
 
     addReply(c, hashTypeExists(o,c->argv[2]->ptr) ? shared.cone : shared.czero);
+    clock_gettime(CLOCK_MONOTONIC, &tend);
+    duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    printf("hexistsCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 void hscanCommand(client *c) {
