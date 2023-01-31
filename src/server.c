@@ -2487,6 +2487,7 @@ void makeThreadKillable(void) {
 }
 
 void initServer(void) {
+    printf("Hello my name yeppi yeppi yo\n");
     int j;
 
     signal(SIGHUP, SIG_IGN);
