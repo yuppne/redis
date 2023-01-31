@@ -601,7 +601,7 @@ void hsetnxCommand(client *c) {
 
 void hsetCommand(client *c) {
     // add time code
-    clock_gettime(CLOCK_MONOTONIC, &tstart2);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart2);
     int i, created = 0;
     robj *o;
 
@@ -629,9 +629,9 @@ void hsetCommand(client *c) {
     notifyKeyspaceEvent(NOTIFY_HASH,"hset",c->argv[1],c->db->id);
     server.dirty += (c->argc - 2)/2;
 
-    clock_gettime(CLOCK_MONOTONIC, &tend2);
-    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
-    printf("hsetCommand : %lld(us)\n", duration2/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend2);
+    // duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    // printf("hsetCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void hincrbyCommand(client *c) {
@@ -882,15 +882,15 @@ void hgetallCommand(client *c) {
 
 void hexistsCommand(client *c) {
     // add time code
-    clock_gettime(CLOCK_MONOTONIC, &tstart);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart);
     robj *o;
     if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.czero)) == NULL ||
         checkType(c,o,OBJ_HASH)) return;
 
     addReply(c, hashTypeExists(o,c->argv[2]->ptr) ? shared.cone : shared.czero);
-    clock_gettime(CLOCK_MONOTONIC, &tend);
-    duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
-    printf("hexistsCommand : %lld(us)\n", duration/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend);
+    // duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    // printf("hexistsCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 void hscanCommand(client *c) {

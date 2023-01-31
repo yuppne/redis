@@ -7155,6 +7155,9 @@ int main(int argc, char **argv) {
     if (background) daemonize();
 
     serverLog(LL_WARNING, "oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo");
+    printf("\n");
+    printf(server.maxmemory_policy);
+    printf("\n");
     serverLog(LL_WARNING,
         "Redis version=%s, bits=%d, commit=%s, modified=%d, pid=%d, just started",
             REDIS_VERSION,

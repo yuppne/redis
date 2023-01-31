@@ -307,7 +307,7 @@ int parseExtendedStringArgumentsOrReply(client *c, int *flags, int *unit, robj *
 void setCommand(client *c) {
     // add time code
 
-    clock_gettime(CLOCK_MONOTONIC, &tstart2);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart2);
     robj *expire = NULL;
     int unit = UNIT_SECONDS;
     int flags = OBJ_NO_FLAGS;
@@ -319,9 +319,9 @@ void setCommand(client *c) {
     c->argv[2] = tryObjectEncoding(c->argv[2]);
     setGenericCommand(c,flags,c->argv[1],c->argv[2],expire,unit,NULL,NULL);
 
-    clock_gettime(CLOCK_MONOTONIC, &tend2);
-    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
-    printf("setGenericCommand : %lld(us)\n", duration2/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend2);
+    // duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    // printf("setGenericCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void setnxCommand(client *c) {
@@ -355,11 +355,11 @@ int getGenericCommand(client *c) {
 
 void getCommand(client *c) {
     // add time code
-    clock_gettime(CLOCK_MONOTONIC, &tstart);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart);
     getGenericCommand(c);
-    clock_gettime(CLOCK_MONOTONIC, &tend);
-    duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
-    printf("getCommand : %lld(us)\n", duration/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend);
+    // duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    // printf("getCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 /*

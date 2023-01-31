@@ -293,11 +293,11 @@ void setKey(client *c, redisDb *db, robj *key, robj *val, int flags) {
 
     if (!keyfound) {
         // add time code 
-        clock_gettime(CLOCK_MONOTONIC, &tstart);
+        // clock_gettime(CLOCK_MONOTONIC, &tstart);
         dbAdd(db,key,val);
-        clock_gettime(CLOCK_MONOTONIC, &tend);
-        duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
-        printf("dbAdd : %lld(us)\n", duration/PER_MICROSEC);
+        // clock_gettime(CLOCK_MONOTONIC, &tend);
+        // duration = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+        // printf("dbAdd : %lld(us)\n", duration/PER_MICROSEC);
     } else {
         dbSetValue(db,key,val,1);
     }
@@ -736,7 +736,7 @@ void unlinkCommand(client *c) {
 /* EXISTS key1 key2 ... key_N.
  * Return value is the number of keys existing. */
 void existsCommand(client *c) {
-    clock_gettime(CLOCK_MONOTONIC, &tstart2);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart2);
     long long count = 0;
     int j;
 
@@ -744,9 +744,9 @@ void existsCommand(client *c) {
         if (lookupKeyReadWithFlags(c->db,c->argv[j],LOOKUP_NOTOUCH)) count++;
     }
     addReplyLongLong(c,count);
-    clock_gettime(CLOCK_MONOTONIC, &tend2);
-    duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
-    printf("existsCommand : %lld(us)\n", duration2/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend2);
+    // duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+    // printf("existsCommand : %lld(us)\n", duration2/PER_MICROSEC);
 }
 
 void selectCommand(client *c) {

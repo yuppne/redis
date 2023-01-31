@@ -1773,11 +1773,11 @@ void zaddGenericCommand(client *c, int flags) {
         ele = c->argv[scoreidx+1+j*2]->ptr;
 
         // add time code 2
-        clock_gettime(CLOCK_MONOTONIC, &tstart2);
+        // clock_gettime(CLOCK_MONOTONIC, &tstart2);
         int retval = zsetAdd(zobj, score, ele, flags, &retflags, &newscore);
-        clock_gettime(CLOCK_MONOTONIC, &tend2);
-        duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
-        printf("zsetAdd : %lld(us)\n", duration2/PER_MICROSEC);
+        // clock_gettime(CLOCK_MONOTONIC, &tend2);
+        // duration2 = NANOS * (tend2.tv_sec-tstart2.tv_sec) + (tend2.tv_nsec-tstart2.tv_nsec);
+        // printf("zsetAdd : %lld(us)\n", duration2/PER_MICROSEC);
         if (retval == 0) {
             addReplyError(c,nanerr);
             goto cleanup;
@@ -1810,12 +1810,12 @@ cleanup:
 
 void zaddCommand(client *c) {
     // add time code 1
-    clock_gettime(CLOCK_MONOTONIC, &tstart);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart);
     zaddGenericCommand(c,ZADD_IN_NONE);
-    clock_gettime(CLOCK_MONOTONIC, &tend);
+    // clock_gettime(CLOCK_MONOTONIC, &tend);
 
-    duration  = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
-    printf("zaddGenericCommand : %lld(us)\n", duration/PER_MICROSEC);
+    // duration  = NANOS * (tend.tv_sec-tstart.tv_sec) + (tend.tv_nsec-tstart.tv_nsec);
+    // printf("zaddGenericCommand : %lld(us)\n", duration/PER_MICROSEC);
 }
 
 void zincrbyCommand(client *c) {
