@@ -30,11 +30,12 @@
 #include "server.h"
 #include <math.h>
 
-#define PER_MICROSEC 1000
-static long long NANOS = 1000000000LL;
-static struct timespec tstart={0,0}, tend={0,0},tstart2={0,0}, tend2={0,0};
-static long long duration = 0;
-static long long duration2 = 0;
+// add time code
+// #define PER_MICROSEC 1000
+// static long long NANOS = 1000000000LL;
+// static struct timespec tstart={0,0}, tend={0,0},tstart2={0,0}, tend2={0,0};
+// static long long duration = 0;
+// static long long duration2 = 0;
 
 /*-----------------------------------------------------------------------------
  * Hash type API

@@ -31,12 +31,12 @@
 #include <math.h> /* isnan(), isinf() */
 
 // add time code
-#define PER_MICROSEC 1000
-static long long NANOS = 1000000000LL;
-static struct timespec tstart={0,0}, tend={0,0}, tstart2={0,0}, tend2={0,0}, tstart3={0,0}, tend3={0,0};
-static long long duration = 0;
-static long long duration2= 0;
-static long long duration3= 0;
+// #define PER_MICROSEC 1000
+// static long long NANOS = 1000000000LL;
+// static struct timespec tstart={0,0}, tend={0,0}, tstart2={0,0}, tend2={0,0}, tstart3={0,0}, tend3={0,0};
+// static long long duration = 0;
+// static long long duration2= 0;
+// static long long duration3= 0;
 
 /* Forward declarations */
 int getGenericCommand(client *c);
@@ -118,11 +118,11 @@ void setGenericCommand(client *c, int flags, robj *key, robj *val, robj *expire,
     setkey_flags |= found ? SETKEY_ALREADY_EXIST : SETKEY_DOESNT_EXIST;
 
     // add time code
-    clock_gettime(CLOCK_MONOTONIC, &tstart3);
+    // clock_gettime(CLOCK_MONOTONIC, &tstart3);
     setKey(c,c->db,key,val,setkey_flags);
-    clock_gettime(CLOCK_MONOTONIC, &tend3);
-    duration3 = NANOS * (tend3.tv_sec-tstart3.tv_sec) + (tend3.tv_nsec-tstart3.tv_nsec);
-    printf("setKey : %lld(us)\n", duration3/PER_MICROSEC);
+    // clock_gettime(CLOCK_MONOTONIC, &tend3);
+    // duration3 = NANOS * (tend3.tv_sec-tstart3.tv_sec) + (tend3.tv_nsec-tstart3.tv_nsec);
+    // printf("setKey : %lld(us)\n", duration3/PER_MICROSEC);
 
     server.dirty++;
     notifyKeyspaceEvent(NOTIFY_STRING,"set",key,c->db->id);
